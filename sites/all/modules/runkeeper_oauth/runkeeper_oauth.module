@@ -1,0 +1,59 @@
+<?php
+  $app_id = "8e38131bc9cc4b18aa66da861284753a"; 
+  $app_secret = "7373b2e96d3c4bd5ac841455e9597873";
+  // in order to get the code, I use return URL set to my current page 
+  $my_url = YOUR_PAGE_URL;
+
+  // code usually is fetched from the URL as its GET parameter
+  $code = $_REQUEST["code"];
+
+  if(empty($code)) {
+    // we also request user_photos permission
+    $dialog_url = 'https://www.facebook.com/dialog/oauth?client_id=' . $app_id . '&redirect_uri=' . urlencode($my_url) . '&scope=user_photos';
+    // redirect page to Facebook dialog, which will be redirected back to our current page, with code attached to URL
+    echo("<script>top.location.href='" . $dialog_url . "'</script>");
+  }
+  else {
+    //get user access_token
+    $token_url = 'https://graph.facebook.com/oauth/access_token?client_id=' . $app_id . '&redirect_uri=' . urlencode($my_url) . '&client_secret=' . $app_secret . '&code=' . $code;
+    $access_token = file_get_contents($token_url);
+
+    // use FQL to get  "Wall photos" album's id (if it is created already by user, to create one from FB, just upload any photo from your wall sing "Add Photo / Video" link)
+    $fql = 'SELECT object_id FROM album WHERE owner=me() AND type="wall"'; 
+    $fql = urlencode($fql);
+    // Run fql query
+    $fql_query_url = 'https://graph.facebook.com/fql?q=' . $fql . '&' . $access_token . '&format=json-strings';
+    $fql_query_result = file_get_contents($fql_query_url);
+    $fql_query_obj = json_decode($fql_query_result, true);
+    
+    // does user have a wall photos album? if not use 'me', which will create Your Application album on FB and upload a photo to this album
+    $wall_album = isset($fql_query_obj['data'][0]['object_id']) ? $fql_query_obj['data'][0]['object_id'] : 'me';
+
+    parse_str($access_token);
+    $img = $_SERVER['DOCUMENT_ROOT'] . "/YOUR_IMAGE_PATH_RELATIVE_TO_SITE_ROOT";
+
+    $img_details = array(
+      'name' => 'Your image description, may have URLs but not HTML',
+      'source' => '@' . realpath($img),
+      'access_token' => $access_token
+    );
+
+    // try to post a photo
+    try {
+      $fb = new Facebook(array(
+        'appId'  => $app_id,
+        'secret' => $app_secret,
+        'cookie' => TRUE,
+        'fileUpload' => TRUE, 
+      ));
+
+      // actual post
+      $res = $fb->api("$wall_album/photos",'POST',$img_details);
+      // print response
+      drupal_set_message('<pre>' . print_r($res, 1) . '</pre>');
+    } 
+    catch (Exception $e) {
+      drupal_set_message($e->getMessage());
+    }
+  }
+?>
