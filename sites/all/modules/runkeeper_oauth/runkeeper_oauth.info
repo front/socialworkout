@@ -1,0 +1,5 @@
+name = Runkeeper Oauth integration
+description = Provide an API for creating web services.
+package = Custom
+core = 7.x
+php = 5.x

@@ -202,8 +202,8 @@ class DrupalOAuthConsumer extends OAuthConsumer {
         ->fields('pc', array('created', 'changed', 'uid', 'name', 'context', 'callback_url'))
         ->isNull('pc.csid');
     }
-
-    return self::fromResult($query->execute());
+    $result = self::fromResult($query->execute());
+    return $result;
   }
 
   /**
@@ -216,7 +216,8 @@ class DrupalOAuthConsumer extends OAuthConsumer {
    */
   public static function fromResult($res) {
     //TODO: Ensure this works with old inputs?
-    if ($data = $res->fetchAssoc()) {
+      $data = $res->fetchAssoc();
+    if ($data) {
       if (!empty($data['configuration'])) {
         $data['configuration'] = unserialize($data['configuration']);
       }
