@@ -3,7 +3,7 @@
 variable_set('consumer_key', '8e38131bc9cc4b18aa66da861284753a');
 
 function runkeeper_oauth_menu() {
-	$items['runkeeper_oauth/request'] = array(
+	$items['oauth/request'] = array(
 		'page callback' => 'goto_auth_page',
 		'access arguments' => array('access content'),
 		);
@@ -30,11 +30,9 @@ $redirect_uri ='http://socialworkout.vps4.front.no/oauth/access';
         	'client_id'=> $client_id,        	
                 'response_type' => $response_type,
         	'redirect_uri' => $redirect_uri,
-
             )
     	)
     );
-echo("sddssddadd");
 
   // the user is redirected to the oauth provider for authenticaltion
 	//sdrupal_goto($auth_url); 
