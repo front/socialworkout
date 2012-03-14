@@ -68,8 +68,9 @@ function receive_auth_code($params = array() ){
 
 		$response = drupal_http_request($token_url, $options);
 
-		if($response){
+		if($response['access_token']){
 			echo('got reponse');
+			echo( $response['access_token']);
 		}
 
 	} else {
