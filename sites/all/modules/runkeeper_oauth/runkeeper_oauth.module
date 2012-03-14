@@ -4,39 +4,19 @@ variable_set('consumer_key', '8e38131bc9cc4b18aa66da861284753a');
 
 function runkeeper_oauth_menu() {
 	$items['oauth/request'] = array(
+		'title' => 'request',
 		'page callback' => 'goto_auth_page',
 		'access arguments' => array('access content'),
 	);
 	$items['oauth/access'] = array(
+		'title' => 'access',
 		'page callback' => 'receive_auth_code',
 		'access arguments' => array('access content'),
-	);
-	$items['test'] = array(
-		'page callback' => 'testtest', 
 	);
         
 	return $items;
 }
-function testtest($params = array()) {
-	$request_uri = 'https://runkeeper.com/apps/authorize';
-	$client_id = '8e38131bc9cc4b18aa66da861284753a';
-	$response_type = 'code';
-	$redirect_uri ='http://socialworkout.vps4.front.no/oauth/access';
-    
-    
-    //drupal_goto('https://runkeeper.com/apps/authorize?client_id=8e38131bc9cc4b18aa66da861284753a&response_type=code&redirect_uri=http://socialworkout.vps4.front.no/oauth/access');
-    drupal_goto($request_uri, array(
-    	'query'=>array(
- 			'client_id'=> $client_id,        	
-			'response_type' => $response_type,
-			'redirect_uri' => $redirect_uri,
-            )
-    	)
-    );
 
-  // the user is redirected to the oauth provider for authenticaltion
-	//sdrupal_goto($auth_url); 
-}
 
 
 /*
