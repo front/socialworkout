@@ -40,7 +40,7 @@ function goto_auth_page($params = array()) {
 	//sdrupal_goto($auth_url); 
 }
 
-function receive_auth_code(){
+function receive_auth_code($params = array()){
     echo("hello");
 }
 
