@@ -67,6 +67,11 @@ function receive_auth_code($params = array() ){
 			);
 
 		$response = drupal_http_request($token_url, $options);
+
+		if($response){
+			echo('got reponse');
+		}
+
 	} else {
 		echo("no code");
 	}
