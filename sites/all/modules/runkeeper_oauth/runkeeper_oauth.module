@@ -44,7 +44,12 @@ function goto_auth_page($params = array()) {
 }
 
 function receive_auth_code($params = array() ){
-    echo("hello");
+	$query_parameters = drupal_get_query_parameters();
+	if (!empty($query_parameters['code'])) {
+		echo("codee");
+	} else {
+		echo("no code");
+	}
 }
 
 function _runkeeper_oauth_test_request() {
