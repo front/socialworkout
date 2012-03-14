@@ -7,13 +7,13 @@ function runkeeper_oauth_menu() {
 		'title' => 'request',
 		'page callback' => 'goto_auth_page',
 		'access arguments' => array('access content'),
-	);
+		);
 	$items['oauth/access'] = array(
 		'title' => 'access',
 		'page callback' => 'receive_auth_code',
 		'access arguments' => array('access content'),
-	);
-        
+		);
+
 	return $items;
 }
 
@@ -27,26 +27,46 @@ function goto_auth_page($params = array()) {
 	$client_id = '8e38131bc9cc4b18aa66da861284753a';
 	$response_type = 'code';
 	$redirect_uri ='http://socialworkout.vps4.front.no/oauth/access';
-    
-    
+
+
     //drupal_goto('https://runkeeper.com/apps/authorize?client_id=8e38131bc9cc4b18aa66da861284753a&response_type=code&redirect_uri=http://socialworkout.vps4.front.no/oauth/access');
-    drupal_goto($request_uri, array(
-    	'query'=>array(
- 			'client_id'=> $client_id,        	
+	drupal_goto($request_uri, array(
+		'query'=>array(
+			'client_id'=> $client_id,        	
 			'response_type' => $response_type,
 			'redirect_uri' => $redirect_uri,
-            )
-    	)
-    );
+			)
+		)
+	);
 
   // the user is redirected to the oauth provider for authenticaltion
 	//sdrupal_goto($auth_url); 
 }
 
 function receive_auth_code($params = array() ){
+	$token_url = 'https://runkeeper.com/apps/token';
+	$client_secret='7373b2e96d3c4bd5ac841455e9597873';
+	$client_id = '8e38131bc9cc4b18aa66da861284753a';
+
+
+
 	$query_parameters = drupal_get_query_parameters();
 	if (!empty($query_parameters['code'])) {
-		echo("codee");
+		echo("code");
+
+		$options = array(
+			'method'=> 'POST',
+			'headers' => array(
+				'Content-Type' => 'application/x-www-form-urlencoded',
+				'grant_type'=>'authorization_code',
+				'code'=>$query_parameters['code'],
+				'client_id'=>$client_id,
+				'client_secret'=>$client_secret,
+				'redirect_uri'=>'http://www.vg.no'
+				),
+			);
+
+		$response = drupal_http_request($token_url, $options);
 	} else {
 		echo("no code");
 	}
